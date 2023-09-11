@@ -4,7 +4,7 @@ An Elixir/Phoenix application with LiveView that allows users to test and previe
 
 ## Setup
 
-The following steps assume a prior installation and setup of Elixir. This project uses `elixir 1.14.2-otp-25` and `erlang 25.2`.
+The following steps assume a prior installation and setup of Elixir and Postgres. This project uses `elixir 1.14.2-otp-25`, `erlang 25.2`, and `postgres 14.8`.
 
 1. Clone the repo, e.g. `git clone git@github.com:aimeebooth/og_previewer.git`
 2. Change directories - `cd og_previewer`
