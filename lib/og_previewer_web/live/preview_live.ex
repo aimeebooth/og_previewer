@@ -2,14 +2,16 @@ defmodule OgPreviewerWeb.PreviewLive do
   use Phoenix.LiveView
 
   def mount(_params, _session, socket) do
-    socket = assign(socket, :processing, false)
-    {:ok, socket}
-  end
+    socket =
+      socket
+      |> assign(:processing, false)
+      |> assign(:url, nil)
 
-  def render(%{url: _url} = assigns) do
-    ~H"""
-    <img src={assigns.url} alt="image" />
-    """
+    if connected?(socket) do
+      Phoenix.PubSub.subscribe(OgPreviewer.PubSub, "url:complete")
+    end
+
+    {:ok, socket}
   end
 
   def render(%{processing: false, url: nil} = assigns) do
@@ -21,7 +23,14 @@ defmodule OgPreviewerWeb.PreviewLive do
     </form>
     """
 
+    # todo: button to retry
     # todo: center content
+  end
+
+  def render(%{processing: false, url: _url} = assigns) do
+    ~H"""
+    <img src={assigns.url} alt="image" />
+    """
   end
 
   def render(%{processing: true, url: nil} = assigns) do
@@ -33,8 +42,22 @@ defmodule OgPreviewerWeb.PreviewLive do
   end
 
   def handle_event("process_url", %{"url" => url}, socket) do
-    OgPreviewer.Jobs.ParseHtmlJob.new(%{url: url}) |> Oban.insert()
+    OgPreviewer.Jobs.ParseHtmlJob.new(%{channel: OgPreviewer.PubSub, url: url}) |> Oban.insert()
     socket = assign(socket, :processing, true)
+    {:noreply, socket}
+  end
+
+  def handle_info({:complete, url}, socket) do
+    socket =
+      socket
+      |> assign(:processing, false)
+      |> assign(:url, url)
+
+    {:noreply, socket}
+  end
+
+  def handle_info({:failed}, socket) do
+    IO.puts("Image processing failed")
     {:noreply, socket}
   end
 end
