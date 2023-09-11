@@ -50,8 +50,7 @@ defmodule OgPreviewer.MixProject do
       {:gettext, "~> 0.20"},
       {:jason, "~> 1.2"},
       {:plug_cowboy, "~> 2.5"},
-      {:httpoison, "~> 2.1.0"},
-      {:oban, "~> 2.15.4"}
+      {:httpoison, "~> 2.1.0"}
     ]
   end
 

@@ -23,8 +23,6 @@ config :og_previewer, OgPreviewerWeb.Endpoint,
 # In test we don't send emails.
 config :og_previewer, OgPreviewer.Mailer, adapter: Swoosh.Adapters.Test
 
-config :og_previewer, Oban, testing: :inline
-
 # Disable swoosh api client as it is only required for production adapters.
 config :swoosh, :api_client, false
 

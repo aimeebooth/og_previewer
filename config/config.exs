@@ -29,11 +29,6 @@ config :og_previewer, OgPreviewerWeb.Endpoint,
 # at the `config/runtime.exs`.
 config :og_previewer, OgPreviewer.Mailer, adapter: Swoosh.Adapters.Local
 
-config :og_previewer, Oban,
-  repo: OgPreviewer.Repo,
-  plugins: [Oban.Plugins.Pruner],
-  queues: [default: 10]
-
 # Configure esbuild (the version is required)
 config :esbuild,
   version: "0.17.11",

@@ -1,9 +1,11 @@
 defmodule OgPreviewerWeb.PreviewLive do
   use Phoenix.LiveView
 
+  @impl true
   def mount(_params, _session, socket) do
     socket =
       socket
+      |> assign(:errors, nil)
       |> assign(:processing, false)
       |> assign(:url, nil)
 
@@ -14,7 +16,8 @@ defmodule OgPreviewerWeb.PreviewLive do
     {:ok, socket}
   end
 
-  def render(%{processing: false, url: nil} = assigns) do
+  @impl true
+  def render(%{errors: nil, processing: false, url: nil} = assigns) do
     ~H"""
     Please enter a url here
     <form phx-submit="process_url">
@@ -27,13 +30,16 @@ defmodule OgPreviewerWeb.PreviewLive do
     # todo: center content
   end
 
-  def render(%{processing: false, url: _url} = assigns) do
+  @impl true
+  def render(%{errors: nil, processing: false, url: _url} = assigns) do
     ~H"""
+    <p>Your image preview:</p>
     <img src={assigns.url} alt="image" />
     """
   end
 
-  def render(%{processing: true, url: nil} = assigns) do
+  @impl true
+  def render(%{errors: nil, processing: true, url: nil} = assigns) do
     ~H"""
     Please wait while your image is being processed
     """
@@ -41,12 +47,21 @@ defmodule OgPreviewerWeb.PreviewLive do
     # todo: add loading gif
   end
 
+  @impl true
+  def render(%{errors: _errors} = assigns) do
+    ~H"""
+    <p>{assigns.errors}</p>
+    """
+  end
+
+  @impl true
   def handle_event("process_url", %{"url" => url}, socket) do
-    OgPreviewer.Jobs.ParseHtmlJob.new(%{channel: OgPreviewer.PubSub, url: url}) |> Oban.insert()
+    OgPreviewer.Jobs.ParseHtml.new(%{channel: OgPreviewer.PubSub, url: url})
     socket = assign(socket, :processing, true)
     {:noreply, socket}
   end
 
+  @impl true
   def handle_info({:complete, url}, socket) do
     socket =
       socket
@@ -56,8 +71,14 @@ defmodule OgPreviewerWeb.PreviewLive do
     {:noreply, socket}
   end
 
-  def handle_info({:failed}, socket) do
-    IO.puts("Image processing failed")
+  @impl true
+  def handle_info({:error, reason}, socket) do
+    socket = assign(socket, :errors, reason)
+    {:noreply, socket}
+  end
+
+  @impl true
+  def handle_info(_message, socket) do
     {:noreply, socket}
   end
 end

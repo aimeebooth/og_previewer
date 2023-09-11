@@ -17,10 +17,9 @@ defmodule OgPreviewer.Application do
       # Start Finch
       {Finch, name: OgPreviewer.Finch},
       # Start the Endpoint (http/https)
-      OgPreviewerWeb.Endpoint,
+      OgPreviewerWeb.Endpoint
       # Start a worker by calling: OgPreviewer.Worker.start_link(arg)
       # {OgPreviewer.Worker, arg}
-      {Oban, Application.fetch_env!(:og_previewer, Oban)}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
