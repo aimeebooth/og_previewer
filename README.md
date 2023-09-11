@@ -18,6 +18,7 @@ OG Previewer is a LiveView application that sends a user-submitted URL to an asy
 An example 200 request can be seen with [J. Robert Oppenheimer](https://en.wikipedia.org/wiki/J._Robert_Oppenheimer) on Wikipedia.
 An example of 308 handling can be seen with [ConAir](https://www.imdb.com/title/tt0118880) on IMDB.
 
-## Issues
+## Stretch Goals
 
-Some Open Graph-compliant URLs [cause a crash](https://github.com/edgurgel/httpoison/issues/328). With more time, I would want to figure out why that's happening and handle that edge case.
+- Handle [edge case](https://github.com/edgurgel/httpoison/issues/328) seen with some Open Graph-compliant URLs
+- Add CSS
