@@ -15,12 +15,12 @@ defmodule OgPreviewer.Jobs.ParseHtml do
         {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
           html = Floki.parse_document!(body)
 
-          urls =
+          url =
             html
             |> Floki.find("[property='og:image']")
             |> Floki.attribute("content")
+            |> Enum.at(0)
 
-          url = Enum.at(urls, 0)
           send(job_pid, {:complete, url})
           {:ok, url}
 

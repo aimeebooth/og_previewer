@@ -11,6 +11,7 @@ defmodule OgPreviewerWeb.PreviewLive do
 
     if connected?(socket) do
       Phoenix.PubSub.subscribe(OgPreviewer.PubSub, "url:complete")
+      Phoenix.PubSub.subscribe(OgPreviewer.PubSub, "url:error")
     end
 
     {:ok, socket}
@@ -50,7 +51,13 @@ defmodule OgPreviewerWeb.PreviewLive do
   @impl true
   def render(%{errors: _errors} = assigns) do
     ~H"""
-    <p>{assigns.errors}</p>
+    <p><%= assigns.errors %></p>
+
+    <p>Try Again:</p>
+    <form phx-submit="process_url">
+      <input type="text" name="url" />
+      <button type="submit" value="Submit">Submit</button>
+    </form>
     """
   end
 
